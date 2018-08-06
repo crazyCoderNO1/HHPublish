@@ -159,14 +159,17 @@ static CGFloat const textFont = 16;
 }
 //计算评论框文字的高度
 - (float) heightForTextView: (UITextView *)textView WithText: (NSString *) strText{
-    //    float padding = 10.0;
+    
+    //多留一点空白 不然文字可能显示不全
+    float padding = 10.0;
+    
     CGSize constraint = CGSizeMake(textView.contentSize.width, CGFLOAT_MAX);
     CGRect size = [strText boundingRectWithSize:constraint
                                         options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                      attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:textFont]}
                                         context:nil];
     float textHeight = size.size.height;
-    return textHeight;
+    return textHeight + padding;
 }
 
 /*
