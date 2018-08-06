@@ -25,19 +25,7 @@
     self.title = @"publish";
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.publishView = [[HHPublishView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_AND_NAVIGATION_HEIGHT - TAB_BAR_SAFE_BOTTOM_MARGIN)];
-    self.publishView.backgroundColor = [UIColor redColor];
-    self.publishView.delegate = self;
-    [self.view addSubview:self.publishView];
-    WEAKSELF
-    self.publishView.addSPV = ^{
-        CGRect frame = weakSelf.publishView.frame;
-        frame.size.height = frame.size.height - kSelectPicHeight;
-        weakSelf.publishView.frame = frame;
-        [weakSelf.spV mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(0);
-        }];
-    };
+    [self setUpPublishView];
     [self setUpTool];
     [self setUpSelectPictureView];
     self.navigationController.navigationBar.translucent = NO;
@@ -51,6 +39,49 @@
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
 }
+
+#pragma mark setUpViews
+- (void)setUpPublishView {
+    self.publishView = [[HHPublishView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_AND_NAVIGATION_HEIGHT - TAB_BAR_SAFE_BOTTOM_MARGIN)];
+    self.publishView.backgroundColor = [UIColor redColor];
+    self.publishView.delegate = self;
+    [self.view addSubview:self.publishView];
+    WEAKSELF
+    self.publishView.addSPV = ^{
+        CGRect frame = weakSelf.publishView.frame;
+        frame.size.height = frame.size.height - kSelectPicHeight;
+        weakSelf.publishView.frame = frame;
+        [weakSelf.spV mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(0);
+        }];
+    };
+}
+
+- (void)setUpTool {
+    //初始化工具栏
+    _toolView  = [[HHPublishToolView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, kToolBarHeight)];
+    [self.view addSubview:_toolView];
+}
+
+- (void)setUpSelectPictureView {
+    WEAKSELF
+    self.spV = [[SelectPictureView alloc]init];
+    //    spV.frame = CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, kToolBarHeight);
+    [self.view addSubview:self.spV];
+    [self.spV mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(0);
+        make.bottom.equalTo(weakSelf.toolView.mas_top).offset(0);
+        make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH, kSelectPicHeight));
+    }];
+    self.spV.selectPictures = ^{
+        //        SRAlbumViewController *vc = [[SRAlbumViewController alloc] init];
+        //        vc.resourceType = 0;
+        //        vc.albumDelegate = weakSelf;
+        //        vc.maxItem = 1;
+        //        [weakSelf presentViewController:vc animated:YES completion:nil];
+    };
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     //大于一行文字的高度,  因为有可能是文字换行, 高度增加.
     NSLog(@"%s %f %f  %f  %f  %f",__FUNCTION__,self.publishView.textView.frame.size.height,scrollView.contentOffset.y, scrollView.contentSize.height,scrollView.frame.size.height,scrollView.contentSize.height - self.publishView.imgHeight - (SCREEN_HEIGHT - STATUS_AND_NAVIGATION_HEIGHT - self.publishView.keyboardHeight - kToolBarHeight));
@@ -72,7 +103,7 @@
     }
 }
 - (void)keyboardWillShow:(NSNotification *)note {
-    
+    WEAKSELF
     //键盘弹出时显示工具栏
     //获取键盘的高度
     NSDictionary *info = [note userInfo];
@@ -84,15 +115,16 @@
         self.publishView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_AND_NAVIGATION_HEIGHT - keyboardSize.height - kToolBarHeight - kSelectPicHeight);
     }
     [UIView animateWithDuration:0.1 animations:^{
-        _toolView.frame = CGRectMake(0, SCREEN_HEIGHT-keyboardSize.height - kToolBarHeight - STATUS_AND_NAVIGATION_HEIGHT, SCREEN_WIDTH, kToolBarHeight);
+        weakSelf.toolView.frame = CGRectMake(0, SCREEN_HEIGHT-keyboardSize.height - kToolBarHeight - STATUS_AND_NAVIGATION_HEIGHT, SCREEN_WIDTH, kToolBarHeight);
     }];
 }
 - (void)keyboardWillHide:(NSNotification *)note {
+    WEAKSELF
     //键盘消失时 隐藏工具栏
     self.publishView.keyboardHeight = 0;
     self.publishView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_AND_NAVIGATION_HEIGHT - kToolBarHeight);
     [UIView animateWithDuration:0.1 animations:^{
-        _toolView.frame = CGRectMake(0, SCREEN_HEIGHT - STATUS_AND_NAVIGATION_HEIGHT -kToolBarHeight, SCREEN_WIDTH, kToolBarHeight);
+        weakSelf.toolView.frame = CGRectMake(0, SCREEN_HEIGHT - STATUS_AND_NAVIGATION_HEIGHT -kToolBarHeight, SCREEN_WIDTH, kToolBarHeight);
     }];
 }
 - (void)viewWillAppear:(BOOL)animated {
@@ -103,31 +135,6 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [self.view endEditing:YES];
     [super viewWillDisappear:animated];
-}
-
-- (void)setUpTool {
-    //初始化工具栏
-    _toolView  = [[HHPublishToolView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, kToolBarHeight)];
-    [self.view addSubview:_toolView];
-}
-
-- (void)setUpSelectPictureView {
-    self.spV = [[SelectPictureView alloc]init];
-    //    spV.frame = CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, kToolBarHeight);
-    [self.view addSubview:self.spV];
-    [self.spV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(0);
-        make.bottom.equalTo(_toolView.mas_top).offset(0);
-        make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH, kSelectPicHeight));
-    }];
-    WEAKSELF
-    self.spV.selectPictures = ^{
-//        SRAlbumViewController *vc = [[SRAlbumViewController alloc] init];
-//        vc.resourceType = 0;
-//        vc.albumDelegate = weakSelf;
-//        vc.maxItem = 1;
-//        [weakSelf presentViewController:vc animated:YES completion:nil];
-    };
 }
 
 - (void)dealloc {
