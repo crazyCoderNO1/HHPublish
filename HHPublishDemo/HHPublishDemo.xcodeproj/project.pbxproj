@@ -176,8 +176,25 @@
 			isa = PBXGroup;
 			children = (
 				1BD2B1902118244800338728 /* HHMacros.h */,
-				1BD2B18E2118236600338728 /* UILabel+Util.h */,
-				1BD2B18D2118236500338728 /* UILabel+Util.m */,
+				1BE126BE2137DA1C00538C62 /* Category */,
+				1BE126BD2137DA0B00538C62 /* View */,
+				1BE126BC2137DA0100538C62 /* Controller */,
+			);
+			path = HHPublishView;
+			sourceTree = "<group>";
+		};
+		1BE126BC2137DA0100538C62 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				1BD2B19A211851C200338728 /* HHPublishController.h */,
+				1BD2B19B211851C200338728 /* HHPublishController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		1BE126BD2137DA0B00538C62 /* View */ = {
+			isa = PBXGroup;
+			children = (
 				1BD2B18A211822E600338728 /* PlaceHolderTV.h */,
 				1BD2B18B211822E600338728 /* PlaceHolderTV.m */,
 				1BD2B1872118229800338728 /* HHPublishView.h */,
@@ -188,10 +205,17 @@
 				1BD2B1952118318800338728 /* SelectedPhotoCell.m */,
 				1BD2B1972118391A00338728 /* HHPublishToolView.h */,
 				1BD2B1982118391A00338728 /* HHPublishToolView.m */,
-				1BD2B19A211851C200338728 /* HHPublishController.h */,
-				1BD2B19B211851C200338728 /* HHPublishController.m */,
 			);
-			path = HHPublishView;
+			path = View;
+			sourceTree = "<group>";
+		};
+		1BE126BE2137DA1C00538C62 /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				1BD2B18E2118236600338728 /* UILabel+Util.h */,
+				1BD2B18D2118236500338728 /* UILabel+Util.m */,
+			);
+			path = Category;
 			sourceTree = "<group>";
 		};
 		2D225185C4D2511787EE289D /* Pods */ = {
