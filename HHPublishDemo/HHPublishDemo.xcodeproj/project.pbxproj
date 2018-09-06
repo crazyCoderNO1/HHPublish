@@ -197,14 +197,14 @@
 			children = (
 				1BD2B18A211822E600338728 /* PlaceHolderTV.h */,
 				1BD2B18B211822E600338728 /* PlaceHolderTV.m */,
-				1BD2B1872118229800338728 /* HHPublishView.h */,
-				1BD2B1882118229800338728 /* HHPublishView.m */,
-				1BD2B1912118317700338728 /* SelectPictureView.h */,
-				1BD2B1922118317700338728 /* SelectPictureView.m */,
 				1BD2B1942118318800338728 /* SelectedPhotoCell.h */,
 				1BD2B1952118318800338728 /* SelectedPhotoCell.m */,
+				1BD2B1912118317700338728 /* SelectPictureView.h */,
+				1BD2B1922118317700338728 /* SelectPictureView.m */,
 				1BD2B1972118391A00338728 /* HHPublishToolView.h */,
 				1BD2B1982118391A00338728 /* HHPublishToolView.m */,
+				1BD2B1872118229800338728 /* HHPublishView.h */,
+				1BD2B1882118229800338728 /* HHPublishView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";

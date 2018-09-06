@@ -70,9 +70,17 @@
         return cell;
     } else {
         SelectedPhotoCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"photoCell" forIndexPath:indexPath];
+        cell.cancelButton.tag = indexPath.row;
+        [cell.cancelButton addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
         return cell;
     }
 }
+
+- (void)cancelAction:(UIButton *)sender {
+//    [self.pictureAssets removeObjectAtIndex:sender.tag];
+//    [self.collectionView reloadData];
+}
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 0 && self.selectPictures) {
         self.selectPictures();
