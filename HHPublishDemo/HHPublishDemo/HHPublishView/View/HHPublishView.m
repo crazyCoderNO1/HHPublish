@@ -16,7 +16,9 @@
 @property (nonatomic, assign)CGFloat textHeight;
 @end
 @implementation HHPublishView
-static CGFloat const textFont = 16;
+static CGFloat  const textFont = 16;
+static int      const textLimit = 1000;
+static CGFloat  const animateDuration = 0.05;
 - (PlaceHolderTV*)textView {
     if (!_textView) {
         _textView = [PlaceHolderTV new];
@@ -38,6 +40,9 @@ static CGFloat const textFont = 16;
         self.contentSize = CGSizeMake(0, self.imgHeight + self.textHeight);
         [self addSubview:self.textView];
         self.textView.frame = CGRectMake(kEdg, kEdg, SCREEN_WIDTH - 2 * kEdg, 38);
+        
+        
+        
         self.imgV = [[UIImageView alloc]init];
         self.imgV.userInteractionEnabled = YES;
         self.deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -97,10 +102,10 @@ static CGFloat const textFont = 16;
 #pragma mark - UITextViewDelegate
 - (void)textViewDidChange:(UITextView *)textView {
     //    NSLog(@"%s   %@",__FUNCTION__,textView.text);
-    if (textView.text.length > 1000) {
+    if (textView.text.length > textLimit) {
         textView.text = [textView.text substringToIndex:200];
     }
-    NSString *countStr = [NSString stringWithFormat:@"%ld/1000", textView.text.length];
+    NSString *countStr = [NSString stringWithFormat:@"%ld/%d", textView.text.length,textLimit];
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
@@ -125,7 +130,7 @@ static CGFloat const textFont = 16;
     }
     
     frame.size.height = height;
-    [UIView animateWithDuration:0.1 animations:^{
+    [UIView animateWithDuration:animateDuration animations:^{
         
         textView.frame = frame;
         
@@ -133,16 +138,7 @@ static CGFloat const textFont = 16;
     
     //
     NSLog(@"----%f",height);
-    CGFloat selectPicHeight = kSelectPicHeight;
-    if (self.imgHeight > 0) {
-        selectPicHeight = 0;
-    } else {
-        selectPicHeight = kSelectPicHeight;
-    }
-    if (height > SCREEN_HEIGHT - STATUS_AND_NAVIGATION_HEIGHT - self.keyboardHeight - kToolBarHeight - selectPicHeight) {
-        self.contentOffset = CGPointMake(0, (height - (SCREEN_HEIGHT - STATUS_AND_NAVIGATION_HEIGHT - self.keyboardHeight - kToolBarHeight - selectPicHeight)));
-        //        self.contentInset = UIEdgeInsetsMake(-(height - (SCREEN_HEIGHT - StatusAndNavHeight - self.keyboardHeight - kToolBarHeight - selectPicHeight)),0,0,0);
-    }
+
     self.textHeight = height;
     self.contentSize = CGSizeMake(0, self.imgHeight + self.textHeight);
     
@@ -150,7 +146,7 @@ static CGFloat const textFont = 16;
     if (1 == range.length) {
         return YES;
     }
-    if (textView.text.length >= 1000) {
+    if (textView.text.length >= textLimit) {
         return NO;
     }
     else {
@@ -170,6 +166,40 @@ static CGFloat const textFont = 16;
                                         context:nil];
     float textHeight = size.size.height;
     return textHeight + padding;
+}
+
+#pragma mark 设置高度
+- (void)setUpFrame {
+    CGRect frame = self.textView.frame;
+    float height = [self heightForTextView:self.textView WithText:[NSString stringWithFormat:@"%@",self.textView.text]];
+    frame.size.height = height;
+    [UIView animateWithDuration:animateDuration animations:^{
+        
+        self.textView.frame = frame;
+        
+    } completion:nil];
+    self.textHeight = height;
+    self.contentSize = CGSizeMake(0, self.imgHeight + self.textHeight);
+}
+
+#pragma mark 根据光标位置设置偏移量
+- (void)textViewDidChangeSelection:(UITextView *)textView {
+    NSRange range = textView.selectedRange;
+    float height = [self heightForTextView:self.textView WithText:[NSString stringWithFormat:@"%@",[self.textView.text substringToIndex:range.location]]];
+    
+    CGFloat selectPicHeight = kSelectPicHeight;
+    if (self.imgHeight > 0) {
+        selectPicHeight = 0;
+    } else {
+        selectPicHeight = kSelectPicHeight;
+    }
+    if (height > SCREEN_HEIGHT - STATUS_AND_NAVIGATION_HEIGHT - self.keyboardHeight - kToolBarHeight - selectPicHeight) {
+        [UIView animateWithDuration:animateDuration animations:^{
+            self.contentOffset = CGPointMake(0, (height - (SCREEN_HEIGHT - STATUS_AND_NAVIGATION_HEIGHT - self.keyboardHeight - kToolBarHeight - selectPicHeight)));
+            //        self.contentInset = UIEdgeInsetsMake(-(height - (SCREEN_HEIGHT - StatusAndNavHeight - self.keyboardHeight - kToolBarHeight - selectPicHeight)),0,0,0);
+        } completion:nil];
+    }
+    NSLog(@"hhhhh---%f",height);
 }
 
 /*

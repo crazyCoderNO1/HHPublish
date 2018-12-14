@@ -18,4 +18,9 @@
 - (void)reloadDataWithImage:(UIImage *)image;
 @property (nonatomic, copy)void (^addSPV)();
 @property (nonatomic, assign)CGFloat keyboardHeight;
+
+/**
+ 初始时给定初始内容 需要设置高度
+ */
+- (void)setUpFrame;
 @end
